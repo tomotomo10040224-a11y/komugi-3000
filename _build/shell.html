@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#faf9f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e0e0d" media="(prefers-color-scheme: dark)">
+<title>食費</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8D%9A%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic&display=swap">
+<style>
+:root {
+  --color-fg: #1b1b19; --color-fg-muted: #6b6b63; --color-bg: #faf9f5; --color-panel: #ffffff; --color-border-line: #e3e2dc;
+  --color-ok: #15803d; --color-warn: #b45309; --color-bad: #dc2626;
+  --font-anthropic-sans: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", "Noto Sans CJK JP", "Yu Gothic UI", sans-serif;
+  --cds-font-size-caption: 12px; --cds-font-size-body: 14px; --cds-font-size-heading: 16px; --cds-font-size-title: 24px; --cds-font-weight-medium: 600;
+  --cds-gap-xs: 4px; --cds-gap-sm: 8px; --cds-gap-md: 16px; --cds-gap-lg: 24px; --cds-pad-xs: 4px; --cds-pad-sm: 8px; --cds-pad-lg: 16px; --cds-radius: 8px;
+  --cds-chart-grid: #e3e2dc; --cds-chart-axis: #b5b4ac; --cds-chart-reference: #8a8a82; --cds-chart-status-critical: #dc2626;
+  --cds-surface-popover: #ffffff; --cds-border: #d6d5cf; --cds-shadow-popover: 0 4px 16px rgba(0,0,0,.12); --cds-text-secondary: #6b6b63;
+  --cds-dur-slow: 300ms; --cds-ease-out: cubic-bezier(.2,.8,.2,1);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-fg: #f2f2f0; --color-fg-muted: #a3a39b; --color-bg: #0e0e0d; --color-panel: #1b1b1a; --color-border-line: #33332f;
+    --color-ok: #22c55e; --color-warn: #f59e0b; --color-bad: #f87171;
+    --cds-chart-grid: #33332f; --cds-chart-axis: #55554f; --cds-chart-reference: #8a8a82; --cds-chart-status-critical: #ef4444;
+    --cds-surface-popover: #262624; --cds-border: #44443f; --cds-shadow-popover: 0 4px 16px rgba(0,0,0,.4); --cds-text-secondary: #a3a39b;
+  }
+}
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--color-bg); color: var(--color-fg); font-family: var(--font-anthropic-sans); }
+.pg { max-width: 1200px; margin: 0 auto; padding: 16px max(16px, env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+.pg[hidden], .gate[hidden] { display: none; }
+.gate { min-height: 100dvh; display: grid; place-items: center; padding: 16px; box-sizing: border-box; }
+.gate-box { width: min(100%, 320px); display: grid; gap: 12px; font-family: "BIZ UDPGothic", var(--font-anthropic-sans); }
+.gate-title { font-size: 20px; }
+.gate-in { font: inherit; font-size: 18px; padding: 12px; color: var(--color-fg); background: var(--color-panel); border: 1px solid var(--cds-border); border-radius: 0; width: 100%; box-sizing: border-box; }
+.gate-in:focus-visible, .gate-btn:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
+.gate-btn { font: inherit; font-size: 16px; padding: 12px; color: var(--color-bg); background: var(--color-fg); border: 0; border-radius: 0; cursor: pointer; }
+.gate-btn:disabled { opacity: .5; cursor: default; }
+.gate-msg { min-height: 1.5em; font-size: 14px; color: var(--color-fg-muted); }
+.gate-msg.bad { color: var(--color-bad); }
+/*__APP_CSS__*/
+</style>
+<script src="d3.min.js" defer></script>
+</head>
+<body>
+<div class="gate" id="gate" hidden>
+  <form class="gate-box" id="gate-form" autocomplete="on">
+    <label class="gate-title" for="gate-in">合言葉</label>
+    <input class="gate-in" id="gate-in" type="password" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false">
+    <button class="gate-btn" id="gate-btn" type="submit">開く</button>
+    <div class="gate-msg" id="gate-msg" role="status"></div>
+  </form>
+</div>
+<div class="pg" id="pg" hidden><div id="dash-root"><!--__APP_BODY__--></div></div>
+<script>
+(function () {
+  var STORE = 'shokuhi-pass';
+  var COLORS = ['#3b82f6', '#ea580c', '#16a34a', '#d97706', '#db2777', '#7c3aed', '#0891b2', '#64748b'];
+  var gate = document.getElementById('gate'), pg = document.getElementById('pg');
+  var input = document.getElementById('gate-in'), btn = document.getElementById('gate-btn'), msg = document.getElementById('gate-msg');
+  var started = false, currentCt = null, startDay = dayStr();
+
+  function dayStr() { var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+  function saved() { try { return localStorage.getItem(STORE); } catch (e) { return null; } }
+  function save(v) { try { if (v === null) localStorage.removeItem(STORE); else localStorage.setItem(STORE, v); } catch (e) {} }
+  function bytes(b64) { var s = atob(b64), a = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) a[i] = s.charCodeAt(i); return a; }
+  function say(text, bad) { msg.textContent = text; msg.className = 'gate-msg' + (bad ? ' bad' : ''); }
+
+  function fetchBlob() {
+    return fetch('data.enc.json', { cache: 'no-store' }).then(function (r) {
+      if (!r.ok) throw new Error('fetch');
+      return r.json();
+    });
+  }
+  function decrypt(blob, pass) {
+    var enc = new TextEncoder();
+    return crypto.subtle.importKey('raw', enc.encode(pass), 'PBKDF2', false, ['deriveKey']).then(function (base) {
+      return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: bytes(blob.salt), iterations: blob.iter, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+    }).then(function (key) {
+      return crypto.subtle.decrypt({ name: 'AES-GCM', iv: bytes(blob.iv) }, key, bytes(blob.ct));
+    }).then(function (buf) {
+      return JSON.parse(new TextDecoder().decode(buf));
+    });
+  }
+  function start(data) {
+    started = true;
+    window.dash = {
+      _calcs: {}, _data: data, colors: COLORS,
+      calc: function (id, o) { this._calcs[id] = o; },
+      data: function (id) {
+        if (this._data[id]) return { status: 'ok', data: this._data[id] };
+        var c = this._calcs[id], self = this;
+        if (!c) return { status: 'missing', data: [] };
+        return { status: 'ok', data: c.fn.apply(null, c.inputs.map(function (i) { return self.data(i).data; })) };
+      },
+      onData: function (fn) { fn(); window.addEventListener('resize', fn); }
+    };
+    gate.hidden = true; pg.hidden = false;
+    var s = document.createElement('script'); s.src = 'app.js'; document.body.appendChild(s);
+  }
+  // 合言葉を試す。合っていれば画面を開き、この端末に覚えさせる
+  function tryOpen(pass, fromSaved) {
+    btn.disabled = true; say(fromSaved ? '' : '確認しています…');
+    return fetchBlob().then(function (blob) {
+      return decrypt(blob, pass).then(function (data) {
+        currentCt = blob.ct; save(pass); start(data);
+      }, function () {
+        if (fromSaved) save(null);
+        gate.hidden = false; btn.disabled = false;
+        say(fromSaved ? '合言葉が変わりました。もう一度入力してください。' : '合言葉が違います。', true);
+        input.select();
+      });
+    }, function () {
+      gate.hidden = false; btn.disabled = false;
+      say('読み込めませんでした。電波のよい場所でもう一度開いてください。', true);
+    });
+  }
+
+  document.getElementById('gate-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var v = input.value.trim();
+    if (v) tryOpen(v, false);
+  });
+  // 画面に戻ってきたとき、日付が変わったかデータが新しくなっていれば読み直す
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState !== 'visible' || !started) return;
+    if (dayStr() !== startDay) { location.reload(); return; }
+    fetchBlob().then(function (blob) { if (blob.ct !== currentCt) location.reload(); }, function () {});
+  });
+
+  function boot() {
+    var pass = saved();
+    if (pass) tryOpen(pass, true); else { gate.hidden = false; input.focus(); }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
+</script>
+</body>
+</html>
