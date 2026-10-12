@@ -1151,7 +1151,6 @@ function render() {
     put('v-week-spent', yen(cur.week_spent), null, cur.date);
     meter('week-bar', cur.week_spent / cur.week_budget, cur.week_spent > cur.week_budget);
     statusChip('chip-week', cur.week_left < 0, '枠内');
-    $('v-week-range').textContent = cur.week_start === cur.week_end ? mdw(cur.week_start) : mdw(cur.week_start) + '〜' + mdw(cur.week_end);
     put('v-month-left', yen(cur.month_left), cur.month_left < 0 ? 'fd-bad' : null, cur.date);
     put('v-month-budget', yen(cur.month_budget), null, cur.date);
     put('v-month-spent', yen(cur.month_spent), null, cur.date);
@@ -1173,7 +1172,6 @@ function render() {
     $('v-date').textContent = '';
     clockOn = false;
     tick();
-    $('v-week-range').textContent = '';
     chip('chip-today', '', false);
     chip('chip-week', '', false);
     chip('chip-month', '', false);
