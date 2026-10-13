@@ -283,28 +283,6 @@ dash.calc('price_points', {
   },
 });
 
-dash.calc('price_board', {
-  inputs: ['price_points'],
-  title: '品目ごとの最安',
-  description: '品目ごとに、買ったときの最安と、チラシに載った最安（どちらも税抜）をまとめたもの。',
-  fn: (price_points) => {
-    const by = {};
-    for (const p of price_points) {
-      const b = by[p.item] || (by[p.item] = {item: p.item, category: p.category, unit: '', buy_times: 0, buy_min: null, buy_min_date: '', flyer_times: 0, flyer_min: null, flyer_min_date: ''});
-      if (p.source === 'buy') {
-        b.buy_times += 1;
-        b.category = p.category;
-        if (b.buy_min == null || p.price < b.buy_min) { b.buy_min = p.price; b.buy_min_date = p.date; }
-      } else {
-        b.flyer_times += 1;
-        if (p.unit) b.unit = p.unit;
-        if (b.flyer_min == null || p.price < b.flyer_min) { b.flyer_min = p.price; b.flyer_min_date = p.date; }
-      }
-    }
-    return Object.keys(by).map((k) => by[k]).sort((a, b) => b.buy_times - a.buy_times || a.item.localeCompare(b.item, 'ja'));
-  },
-});
-
 dash.calc('flyer_deals', {
   inputs: ['flyer_items', 'price_points'],
   title: 'チラシの特売品と、これまでの最安',
@@ -912,7 +890,7 @@ function drawInsights(today, weekEnd, prevWeekEnd, weekLabel) {
 }
 
 // 価格の推移: 品目を押すと、その下に開く。丸は買った価格、四角はチラシの価格
-let openPrice = null, priceMode = 'bought';
+let openPrice = null;
 const FLYER_COLOR = 'var(--color-warn)';
 
 function drawPriceChart(box, pts) {
@@ -1028,7 +1006,7 @@ function drawFlyer(box, flagBox, rows, today, pointsBy) {
       price.append(marked('span', 'fd-n', yen(r.price), 'flyer_deals', 'price', where));
       if (r.min_price != null) {
         const low = el('div', 'fd-fly-sub');
-        low.append('これまでの最安 ', marked('span', '', yen(r.min_price), 'flyer_deals', 'min_price', where));
+        low.append('底値 ', marked('span', '', yen(r.min_price), 'flyer_deals', 'min_price', where));
         price.append(low);
       }
       row.append(main, price);
@@ -1036,45 +1014,6 @@ function drawFlyer(box, flagBox, rows, today, pointsBy) {
     }
   }
   if (live.some((r) => r.good && r.valid_from <= today)) flagBox.append(el('span', 'fd-pill', '買い時あり'));
-  box.scrollTop = keep;
-}
-
-// 底値メモ: 買った最安とチラシの最安を並べる。分類ごとにまとめ、上のボタンで分類を絞れる
-let priceCat = 'all';
-function drawPriceList(box, rows, pointsBy) {
-  const keep = box.scrollTop, chips = $('price-cats');
-  box.replaceChildren();
-  chips.replaceChildren();
-  for (const b of root.querySelectorAll('#price-mode .fd-seg-btn')) b.classList.toggle('fd-seg-on', b.dataset.mode === priceMode);
-  const list = rows.filter((r) => priceMode === 'all' || r.buy_times > 0);
-  if (!list.length) { box.append(el('div', 'fd-rcpt-none', 'まだデータが足りません')); return; }
-  const groups = d3.groups(list, (r) => r.category).sort((a, b) => catRank(a[0]) - catRank(b[0]) || a[0].localeCompare(b[0], 'ja'));
-  if (priceCat !== 'all' && !groups.some((g) => g[0] === priceCat)) priceCat = 'all';
-  for (const [value, label] of [['all', 'すべて'], ...groups.map((g) => [g[0], catIcon(g[0]) + ' ' + g[0]])]) {
-    const b = el('button', 'fd-seg-btn' + (value === priceCat ? ' fd-seg-on' : ''), label);
-    b.type = 'button';
-    b.addEventListener('click', () => { priceCat = value; openPrice = null; box.scrollTop = 0; render(); });
-    chips.append(b);
-  }
-  for (const [category, items] of groups) {
-    if (priceCat !== 'all' && category !== priceCat) continue;
-    box.append(el('div', 'fd-fly-h', catIcon(category) + ' ' + category));
-    items.sort((a, b) => b.buy_times - a.buy_times || a.item.localeCompare(b.item, 'ja'));
-    for (const r of items) {
-      const where = 'item=' + whereVal(r.item), row = el('div', 'fd-fly-row'), main = el('div', 'fd-fly-main'), price = el('div', 'fd-fly-price');
-      main.append(el('div', 'fd-fly-name', r.item));
-      if (r.unit) main.append(el('div', 'fd-fly-sub', r.unit));
-      const best = Math.min(r.buy_min == null ? Infinity : r.buy_min, r.flyer_min == null ? Infinity : r.flyer_min);
-      for (const [field, label] of [['buy_min', '買った'], ['flyer_min', 'チラシ']]) {
-        if (r[field] == null) continue;
-        const line = el('div', 'fd-pv' + (r[field] === best && r.buy_min != null && r.flyer_min != null ? ' fd-pv-best' : ''));
-        line.append(label, marked('span', 'fd-n', yen(r[field]), 'price_board', field, where));
-        price.append(line);
-      }
-      row.append(main, price);
-      addPriceRow(box, row, 'book|' + r.item, pointsBy.get(r.item));
-    }
-  }
   box.scrollTop = keep;
 }
 
@@ -1290,7 +1229,6 @@ function render() {
   const nextWeek = buyRows.filter((d) => d.date >= addDays(monday, 7) && d.date <= addDays(monday, 13));
   const pointsBy = d3.group(rowsOf(dash.data('price_points')), (p) => p.item);
   drawFlyer($('flyer-list'), $('flyer-flags'), rowsOf(dash.data('flyer_deals')), today, pointsBy);
-  drawPriceList($('price-list'), rowsOf(dash.data('price_board')), pointsBy);
   drawBuy($('buy-days'), thisWeek, today);
   drawBuy($('buy-next-week'), nextWeek, today);
   $('buy-more').hidden = !nextWeek.length;
@@ -1327,9 +1265,7 @@ $('weeks-next').addEventListener('click', () => {
 });
 // 折りたたみを開いたときに、実際の幅で道のりを描き直す
 $('tile-goal').addEventListener('toggle', render);
-$('card-prices').addEventListener('toggle', render);
 $('card-flyer').addEventListener('toggle', render);
-for (const b of root.querySelectorAll('#price-mode .fd-seg-btn')) b.addEventListener('click', () => { priceMode = b.dataset.mode; openPrice = null; $('price-list').scrollTop = 0; render(); });
 for (const b of root.querySelectorAll('#flyer-sort .fd-seg-btn')) b.addEventListener('click', () => { flyerSort = b.dataset.sort; openPrice = null; $('flyer-list').scrollTop = 0; render(); });
 $('card-insights').addEventListener('toggle', render);
 
