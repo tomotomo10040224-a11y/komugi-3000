@@ -969,14 +969,34 @@ const catRank = (c) => { const i = Object.keys(CAT_STYLE).indexOf(c); return i <
 const catIcon = (c) => (CAT_STYLE[c] || {icon: '🛍️'}).icon;
 
 // チラシ: 分類ごとにまとめる。上のボタンで分類を絞れる。買ったことのある品を先に、あとは品名順
-let flyerCat = 'all', flyerSort = 'name';
+let flyerCat = 'all', flyerSort = 'name', flyerDay = null;
 function drawFlyer(box, flagBox, rows, today, pointsBy) {
   const keep = box.scrollTop, chips = $('flyer-cats');
   box.replaceChildren();
   flagBox.replaceChildren();
   chips.replaceChildren();
   for (const b of root.querySelectorAll('#flyer-sort .fd-seg-btn')) b.classList.toggle('fd-seg-on', b.dataset.sort === flyerSort);
-  const live = rows.filter((r) => r.valid_to >= today);
+  const live0 = rows.filter((r) => r.valid_to >= today);
+  // 日付ボタン: 今日から、チラシの品が出ている日だけを並べる。押した日に買える品だけに絞る
+  const dayBox = $('flyer-days');
+  dayBox.replaceChildren();
+  const days = [];
+  if (live0.length) {
+    const last = d3.max(live0, (r) => r.valid_to);
+    for (let d = today; d <= last && days.length < 7; d = addDays(d, 1)) if (live0.some((r) => r.valid_from <= d && d <= r.valid_to)) days.push(d);
+  }
+  if (flyerDay && flyerDay !== 'all' && !days.includes(flyerDay)) flyerDay = null;
+  if (!flyerDay) flyerDay = days.includes(today) ? today : 'all';
+  if (days.length > 1 || (days.length === 1 && days[0] !== today)) {
+    for (const d of ['all', ...days]) {
+      const label = d === 'all' ? 'すべて' : d === today ? '今日' : d === addDays(today, 1) ? '明日 ' + mdw(d) : mdw(d);
+      const b = el('button', 'fd-seg-btn' + (d === flyerDay ? ' fd-seg-on' : ''), label);
+      b.type = 'button';
+      b.addEventListener('click', () => { flyerDay = d; openPrice = null; box.scrollTop = 0; render(); });
+      dayBox.append(b);
+    }
+  }
+  const live = flyerDay === 'all' ? live0 : live0.filter((r) => r.valid_from <= flyerDay && flyerDay <= r.valid_to);
   if (!live.length) { box.append(el('div', 'fd-rcpt-none', 'いま出ているチラシはありません')); return; }
   const groups = d3.groups(live, (r) => r.category).sort((a, b) => catRank(a[0]) - catRank(b[0]) || a[0].localeCompare(b[0], 'ja'));
   if (flyerCat !== 'all' && !groups.some((g) => g[0] === flyerCat)) flyerCat = 'all';
@@ -1013,7 +1033,7 @@ function drawFlyer(box, flagBox, rows, today, pointsBy) {
       addPriceRow(box, row, 'flyer|' + r.id, pointsBy.get(r.key));
     }
   }
-  if (live.some((r) => r.good && r.valid_from <= today)) flagBox.append(el('span', 'fd-pill', '買い時あり'));
+  if (live0.some((r) => r.good && r.valid_from <= today)) flagBox.append(el('span', 'fd-pill', '買い時あり'));
   box.scrollTop = keep;
 }
 
