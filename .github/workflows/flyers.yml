@@ -15,6 +15,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Restore previous flyers
+        run: |
+          git clone -q --depth 1 -b flyers "https://github.com/${{ github.repository }}.git" "$RUNNER_TEMP/prev" || mkdir -p "$RUNNER_TEMP/prev"
+          mkdir -p "$RUNNER_TEMP/out"
+          cp "$RUNNER_TEMP"/prev/*.jpg "$RUNNER_TEMP"/prev/leaflets.json "$RUNNER_TEMP/out/" 2>/dev/null || true
       - name: Fetch flyer images
         run: python3 _flyer/fetch.py "$RUNNER_TEMP/out"
       - name: Publish to flyers branch
