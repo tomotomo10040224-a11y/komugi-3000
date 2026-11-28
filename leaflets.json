@@ -1,0 +1,197 @@
+{
+ "fetched_at": "2026-11-28T16:48:57+09:00",
+ "current": [
+  "109385168",
+  "109385217",
+  "107395546",
+  "107395598",
+  "107395651"
+ ],
+ "errors": [],
+ "leaflets": {
+  "107395546": {
+   "file": "107395546.jpg",
+   "label": "11月ポイントカレンダー 10月25日更新",
+   "image_path": "/images/bargain_office_leaflets/o=true/9795287.jpg",
+   "bytes": 419309,
+   "first_seen": "2026-10-25T08:12:16+09:00",
+   "last_seen": "2026-11-28T16:48:57+09:00"
+  },
+  "107395598": {
+   "file": "107395598.jpg",
+   "label": "11月アプリクーポン 10月25日更新",
+   "image_path": "/images/bargain_office_leaflets/o=true/9795290.jpg",
+   "bytes": 1227333,
+   "first_seen": "2026-10-25T08:12:16+09:00",
+   "last_seen": "2026-11-28T16:48:57+09:00"
+  },
+  "107395651": {
+   "file": "107395651.jpg",
+   "label": "11月アプリクーポン 10月25日更新",
+   "image_path": "/images/bargain_office_leaflets/o=true/9795294.jpg",
+   "bytes": 1295145,
+   "first_seen": "2026-10-25T08:12:16+09:00",
+   "last_seen": "2026-11-28T16:48:57+09:00"
+  },
+  "108569537": {
+   "file": "108569537.jpg",
+   "label": "2026年11月14日～16日 11月14日更新",
+   "image_path": "/images/bargain_office_leaflets/o=true/9850616.jpg",
+   "bytes": 1215969,
+   "first_seen": "2026-11-14T10:26:15+09:00",
+   "last_seen": "2026-11-16T15:30:11+09:00"
+  },
+  "108569585": {
+   "file": "108569585.jpg",
+   "label": "2026年11月14日～16日 11月14日更新",
+   "image_path": "/images/bargain_office_leaflets/o=true/9850617.jpg",
+   "bytes": 1263146,
+   "first_seen": "2026-11-14T10:26:15+09:00",
+   "last_seen": "2026-11-16T15:30:11+09:00"
+  },
+  "108569633": {
+   "file": "108569633.jpg",
+   "label": "2026年11月15日 11月15日更新",
+   "image_path": "/images/bargain_office_leaflets/o=true/9850618.jpg",
+   "bytes": 866986,
+   "first_seen": "2026-11-15T10:01:17+09:00",
+   "last_seen": "2026-11-15T15:32:14+09:00"
+  },
+  "108569682": {
+   "file": "108569682.jpg",
+   "label": "2026年11月16日 11月16日更新",
+   "image_path": "/images/bargain_office_leaflets/o=true/9850619.jpg",
+   "bytes": 708450,
+   "first_seen": "2026-11-16T10:00:17+09:00",
+   "last_seen": "2026-11-16T15:30:11+09:00"
+  },
+  "108645575": {
+   "file": "108645575.jpg",
+   "label": "2026年11月17日～18日 11月17日更新",
+   "image_path": "/images/bargain_office_leaflets/o=true/9855203.jpg",
+   "bytes": 1165760,
+   "first_seen": "2026-11-17T12:50:47+09:00",
+   "last_seen": "2026-11-18T16:28:55+09:00"
+  },
+  "108645623": {
+   "file": "108645623.jpg",
+   "label": "2026年11月17日～18日 11月17日更新",
+   "image_path": "/images/bargain_office_leaflets/o=true/9855204.jpg",
+   "bytes": 1181867,
+   "first_seen": "2026-11-17T12:50:47+09:00",
+   "last_seen": "2026-11-18T16:28:55+09:00"
+  },
+  "108737914": {
+   "file": "108737914.jpg",
+   "label": "2026年11月19日～21日 11月19日更新",
+   "image_path": "/images/bargain_office_leaflets/o=true/9862323.jpg",
+   "bytes": 1233277,
+   "first_seen": "2026-11-19T11:32:44+09:00",
+   "last_seen": "2026-11-21T16:08:32+09:00"
+  },
+  "108737962": {
+   "file": "108737962.jpg",
+   "label": "2026年11月19日～21日 11月19日更新",
+   "image_path": "/images/bargain_office_leaflets/o=true/9862324.jpg",
+   "bytes": 1236214,
+   "first_seen": "2026-11-19T11:32:44+09:00",
+   "last_seen": "2026-11-21T16:08:32+09:00"
+  },
+  "108738010": {
+   "file": "108738010.jpg",
+   "label": "2026年11月20日 11月20日更新",
+   "image_path": "/images/bargain_office_leaflets/o=true/9862325.jpg",
+   "bytes": 977450,
+   "first_seen": "2026-11-20T11:18:01+09:00",
+   "last_seen": "2026-11-20T16:16:10+09:00"
+  },
+  "108738059": {
+   "file": "108738059.jpg",
+   "label": "2026年11月21日 11月21日更新",
+   "image_path": "/images/bargain_office_leaflets/o=true/9862326.jpg",
+   "bytes": 941651,
+   "first_seen": "2026-11-21T11:11:46+09:00",
+   "last_seen": "2026-11-21T16:08:32+09:00"
+  },
+  "108839510": {
+   "file": "108839510.jpg",
+   "label": "2026年11月22日～24日 11月22日更新",
+   "image_path": "/images/bargain_office_leaflets/o=true/9874330.jpg",
+   "bytes": 1264771,
+   "first_seen": "2026-11-22T10:16:48+09:00",
+   "last_seen": "2026-11-24T18:54:18+09:00"
+  },
+  "108839556": {
+   "file": "108839556.jpg",
+   "label": "2026年11月22日～24日 11月22日更新",
+   "image_path": "/images/bargain_office_leaflets/o=true/9874331.jpg",
+   "bytes": 1212211,
+   "first_seen": "2026-11-22T10:16:48+09:00",
+   "last_seen": "2026-11-24T18:54:18+09:00"
+  },
+  "108839664": {
+   "file": "108839664.jpg",
+   "label": "2026年11月23日 11月23日更新",
+   "image_path": "/images/bargain_office_leaflets/o=true/9874337.jpg",
+   "bytes": 852128,
+   "first_seen": "2026-11-23T10:40:36+09:00",
+   "last_seen": "2026-11-23T16:39:33+09:00"
+  },
+  "108839710": {
+   "file": "108839710.jpg",
+   "label": "2026年11月24日 11月24日更新",
+   "image_path": "/images/bargain_office_leaflets/o=true/9874338.jpg",
+   "bytes": 911293,
+   "first_seen": "2026-11-24T14:19:00+09:00",
+   "last_seen": "2026-11-24T18:54:18+09:00"
+  },
+  "108919147": {
+   "file": "108919147.jpg",
+   "label": "2026年11月25日～27日 11月25日更新",
+   "image_path": "/images/bargain_office_leaflets/o=true/9880757.jpg",
+   "bytes": 937631,
+   "first_seen": "2026-11-25T13:10:34+09:00",
+   "last_seen": "2026-11-27T17:34:20+09:00"
+  },
+  "108919195": {
+   "file": "108919195.jpg",
+   "label": "2026年11月25日～27日 11月25日更新",
+   "image_path": "/images/bargain_office_leaflets/o=true/9880758.jpg",
+   "bytes": 1030746,
+   "first_seen": "2026-11-25T13:10:34+09:00",
+   "last_seen": "2026-11-27T17:34:20+09:00"
+  },
+  "108919243": {
+   "file": "108919243.jpg",
+   "label": "2026年11月26日 11月26日更新",
+   "image_path": "/images/bargain_office_leaflets/o=true/9880759.jpg",
+   "bytes": 905928,
+   "first_seen": "2026-11-26T12:32:41+09:00",
+   "last_seen": "2026-11-26T17:18:09+09:00"
+  },
+  "108919291": {
+   "file": "108919291.jpg",
+   "label": "2026年11月27日 11月27日更新",
+   "image_path": "/images/bargain_office_leaflets/o=true/9880760.jpg",
+   "bytes": 767201,
+   "first_seen": "2026-11-27T12:38:07+09:00",
+   "last_seen": "2026-11-27T17:34:20+09:00"
+  },
+  "109385168": {
+   "file": "109385168.jpg",
+   "label": "2026年11月28日～30日 11月28日更新",
+   "image_path": "/images/bargain_office_leaflets/o=true/9894700.jpg",
+   "bytes": 1164079,
+   "first_seen": "2026-11-28T12:18:27+09:00",
+   "last_seen": "2026-11-28T16:48:57+09:00"
+  },
+  "109385217": {
+   "file": "109385217.jpg",
+   "label": "2026年11月28日～30日 11月28日更新",
+   "image_path": "/images/bargain_office_leaflets/o=true/9894701.jpg",
+   "bytes": 1382809,
+   "first_seen": "2026-11-28T12:18:27+09:00",
+   "last_seen": "2026-11-28T16:48:57+09:00"
+  }
+ }
+}
